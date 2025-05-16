@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  */
 
 public class dbConnector {
-    private static final String URL = "jdbc:mysql://localhost:3306/sarns";  // Change DB name if necessary
+    private static final String URL = "jdbc:mysql://localhost:3306/vetsystem";  // Change DB name if necessary
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

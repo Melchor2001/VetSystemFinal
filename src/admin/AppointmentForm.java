@@ -192,67 +192,87 @@ public class AppointmentForm extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
  String appointmentId = AI.getText().trim();  // Appointment ID
-    String petNameStr = petName.getText().trim();
-    String breedStr = breed.getText().trim();
-    String ageStr = age.getText().trim();
-    String reasonStr = reason.getText().trim();  // Assuming you have a JTextField or JTextArea for reason
+String petNameStr = petName.getText().trim();
+String breedStr = breed.getText().trim();
+String ageStr = age.getText().trim();
+String reasonStr = reason.getText().trim();  // Assuming you have a JTextField or JTextArea for reason
 
-    // Validation
-    if (appointmentId.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Error: Appointment ID is missing.", "Error", JOptionPane.ERROR_MESSAGE);
+// Basic empty field validation
+if (appointmentId.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Error: Appointment ID is missing.", "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+if (petNameStr.isEmpty() || breedStr.isEmpty() || ageStr.isEmpty() || reasonStr.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+// Custom validations
+if (!petNameStr.matches("[a-zA-Z\\s]+")) {
+    JOptionPane.showMessageDialog(this, "Pet name should only contain letters and spaces.", "Input Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+if (!breedStr.matches("[a-zA-Z\\s]+")) {
+    JOptionPane.showMessageDialog(this, "Breed should only contain letters and spaces.", "Input Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+if (reasonStr.length() < 5) {
+    JOptionPane.showMessageDialog(this, "Reason should be at least 5 characters long.", "Input Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+try {
+    int ageInt = Integer.parseInt(ageStr);
+    if (ageInt <= 0) {
+        JOptionPane.showMessageDialog(this, "Age must be a positive number.", "Input Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    if (petNameStr.isEmpty() || breedStr.isEmpty() || ageStr.isEmpty() || reasonStr.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+    dbConnector dbc = new dbConnector();
+
+    // Check if the appointment ID exists
+    String checkQuery = "SELECT COUNT(*) FROM appointment WHERE appointment_id = ?";
+    try (Connection conn = dbc.getConnection();
+         PreparedStatement pst = conn.prepareStatement(checkQuery)) {
+
+        pst.setString(1, appointmentId);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next() && rs.getInt(1) == 0) {
+            JOptionPane.showMessageDialog(this, "Appointment ID not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
     }
 
-    try {
-        int ageInt = Integer.parseInt(ageStr);
+    // Update the appointment details
+    String updateQuery = "UPDATE appointment SET pet_name = ?, pet_breed = ?, pet_age = ?, appointment_reason = ? WHERE appointment_id = ?";
+    try (Connection conn = dbc.getConnection();
+         PreparedStatement updatePst = conn.prepareStatement(updateQuery)) {
 
-        dbConnector dbc = new dbConnector();
+        updatePst.setString(1, petNameStr);
+        updatePst.setString(2, breedStr);
+        updatePst.setInt(3, ageInt);
+        updatePst.setString(4, reasonStr);
+        updatePst.setString(5, appointmentId);
 
-        // Check if the appointment ID exists
-        String checkQuery = "SELECT COUNT(*) FROM appointment WHERE appointment_id = ?";
-        try (Connection conn = dbc.getConnection();
-             PreparedStatement pst = conn.prepareStatement(checkQuery)) {
-
-            pst.setString(1, appointmentId);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next() && rs.getInt(1) == 0) {
-                JOptionPane.showMessageDialog(this, "Appointment ID not found!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        int updated = updatePst.executeUpdate();
+        if (updated > 0) {
+            JOptionPane.showMessageDialog(this, "Appointment updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            new ViewAllAppointments().setVisible(true); // Redirect to appointment list form
+            this.dispose();  // Close this form
+        } else {
+            JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
 
-        // Update the appointment details
-        String updateQuery = "UPDATE appointment SET pet_name = ?, pet_breed = ?, pet_age = ?, appointment_reason = ? WHERE appointment_id = ?";
-        try (Connection conn = dbc.getConnection();
-             PreparedStatement updatePst = conn.prepareStatement(updateQuery)) {
-
-            updatePst.setString(1, petNameStr);
-            updatePst.setString(2, breedStr);
-            updatePst.setInt(3, ageInt);
-            updatePst.setString(4, reasonStr);
-            updatePst.setString(5, appointmentId);
-
-            int updated = updatePst.executeUpdate();
-            if (updated > 0) {
-                JOptionPane.showMessageDialog(this, "Appointment updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                new ViewAllAppointments().setVisible(true); // Redirect to appointment list form
-                this.dispose();  // Close this form
-            } else {
-                JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Age must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
-    } catch (SQLException | HeadlessException ex) {
-        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-    }     // TODO add your handling code here:
+} catch (NumberFormatException ex) {
+    JOptionPane.showMessageDialog(this, "Age must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+} catch (SQLException | HeadlessException ex) {
+    JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+}   // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed

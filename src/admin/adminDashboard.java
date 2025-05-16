@@ -163,6 +163,8 @@ private void loadUserProfile() {
         jLabel2 = new javax.swing.JLabel();
         LOGpannel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         logstbl = new javax.swing.JTable();
@@ -244,7 +246,7 @@ private void loadUserProfile() {
         });
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 70, 40));
 
-        jPanel3.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 200, 70));
+        jPanel3.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 350, 200, 70));
 
         acc_lname.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         acc_lname.setForeground(new java.awt.Color(255, 255, 255));
@@ -288,7 +290,7 @@ private void loadUserProfile() {
         jLabel5.setText("Medical Record");
         jPanel8.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 200, 20));
 
-        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 460, 200, 60));
+        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 430, 200, 60));
 
         jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -314,7 +316,7 @@ private void loadUserProfile() {
                 .addContainerGap())
         );
 
-        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 290, 200, 60));
+        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 200, 60));
 
         LOGpannel.setBackground(new java.awt.Color(255, 255, 255));
         LOGpannel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -338,9 +340,35 @@ private void loadUserProfile() {
         });
         LOGpannel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 10));
 
-        jPanel3.add(LOGpannel, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 540, 68, 30));
+        jPanel3.add(LOGpannel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 610, 68, 30));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 200, 580));
+        jPanel9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel9MouseClicked(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("RECORDS");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel3.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 200, 50));
+
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 200, 650));
 
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
         jPanel12.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -365,7 +393,7 @@ private void loadUserProfile() {
         jLabel6.setText("Sometimes, your pet picks you.");
         jPanel12.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
-        getContentPane().add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 30, 770, 580));
+        getContentPane().add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 30, 770, 650));
 
         pack();
         setLocationRelativeTo(null);
@@ -452,6 +480,12 @@ private void loadUserProfile() {
         this.dispose();           // TODO add your handling code here:
     }//GEN-LAST:event_jPanel6MouseClicked
 
+    private void jPanel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel9MouseClicked
+       ViewRecord VR = new ViewRecord();
+        VR.setVisible(true);
+        this.dispose();          // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel9MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -501,6 +535,7 @@ private void loadUserProfile() {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
@@ -511,6 +546,7 @@ private void loadUserProfile() {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable logstbl;
     private javax.swing.JLabel u_image;
