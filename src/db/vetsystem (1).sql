@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2025 at 11:18 AM
+-- Generation Time: May 16, 2025 at 05:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,28 +24,50 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_loads`
+-- Table structure for table `appointment`
 --
 
-CREATE TABLE `tbl_loads` (
-  `Load_id` int(11) NOT NULL,
-  `Cargo` varchar(255) NOT NULL,
-  `Destination` varchar(255) NOT NULL,
-  `Weight` decimal(10,2) NOT NULL,
-  `Status` varchar(255) NOT NULL
+CREATE TABLE `appointment` (
+  `appointment_id` int(11) NOT NULL,
+  `pet_name` varchar(150) NOT NULL,
+  `pet_breed` varchar(150) NOT NULL,
+  `pet_age` int(11) NOT NULL,
+  `appointment_reason` varchar(255) NOT NULL,
+  `status` varchar(20) DEFAULT 'Scheduled'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `tbl_loads`
+-- Dumping data for table `appointment`
 --
 
-INSERT INTO `tbl_loads` (`Load_id`, `Cargo`, `Destination`, `Weight`, `Status`) VALUES
-(1, 'Electronics', 'New York', 9.00, 'Delivered'),
-(3, 'Furniture', 'City B', 8.00, 'Delivered'),
-(4, 'Furniture', 'City H', 6.00, 'Active'),
-(5, 'Clothing', 'Las Vegas', 7.00, 'Pending'),
-(6, 'Medicine', 'HongKong', 5.00, 'Pending'),
-(7, 'Logs', 'MountApo', 4.00, 'Pending');
+INSERT INTO `appointment` (`appointment_id`, `pet_name`, `pet_breed`, `pet_age`, `appointment_reason`, `status`) VALUES
+(1, 'Max', 'Golden Retriever', 5, 'Vaccination', 'Scheduled'),
+(2, 'Meow', 'Chuwawa', 3, 'infection', 'Scheduled');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `medicalrecord`
+--
+
+CREATE TABLE `medicalrecord` (
+  `record_id` int(11) NOT NULL,
+  `appointment_id` int(11) NOT NULL,
+  `pet_name` varchar(100) NOT NULL,
+  `pet_breed` varchar(100) DEFAULT NULL,
+  `pet_age` int(11) DEFAULT NULL,
+  `diagnosis` text DEFAULT NULL,
+  `prescription` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `treatment` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `medicalrecord`
+--
+
+INSERT INTO `medicalrecord` (`record_id`, `appointment_id`, `pet_name`, `pet_breed`, `pet_age`, `diagnosis`, `prescription`, `notes`, `treatment`) VALUES
+(1, 1, 'Max', 'Golden Retriever', 5, 'asdasda', 'dasdasd', 'Vaccination must apply', 'dasd');
 
 -- --------------------------------------------------------
 
@@ -118,7 +140,28 @@ INSERT INTO `tbl_log` (`log_id`, `u_id`, `u_username`, `u_type`, `login_time`, `
 (47, 3, 'jeja123', 'Success - Admin Login', '2025-04-27 09:11:05', '2025-04-27 09:11:36', 'Inactive', NULL),
 (48, 3, 'jeja123', 'Admin', '2025-04-27 09:11:30', '2025-04-27 09:11:36', 'Inactive', 'Admin Added a New Load: Logs'),
 (49, 3, 'jeja123', 'Success - Admin Login', '2025-04-27 09:13:40', '2025-04-27 09:13:46', 'Inactive', NULL),
-(50, 3, 'jeja123', 'Success - Admin Login', '2025-04-27 09:14:37', '2025-04-27 09:14:44', 'Inactive', NULL);
+(50, 3, 'jeja123', 'Success - Admin Login', '2025-04-27 09:14:37', '2025-04-27 09:14:44', 'Inactive', NULL),
+(51, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 12:20:27', '2025-05-16 12:20:29', 'Inactive', NULL),
+(54, 1, 'ross123', 'Success - User Login', '2025-05-16 12:20:50', NULL, 'Active', NULL),
+(55, 1, 'ross123', 'Success - User Login', '2025-05-16 12:22:35', NULL, 'Active', NULL),
+(56, 1, 'ross123', 'Success - User Login', '2025-05-16 12:24:13', NULL, 'Active', NULL),
+(58, 1, 'ross123', 'Success - User Login', '2025-05-16 12:24:57', NULL, 'Active', NULL),
+(59, 1, 'ross123', 'Success - User Login', '2025-05-16 12:28:38', NULL, 'Active', NULL),
+(60, 1, 'ross123', 'Success - User Login', '2025-05-16 12:58:13', NULL, 'Active', NULL),
+(61, 1, 'ross123', 'Success - User Login', '2025-05-16 13:16:31', NULL, 'Active', NULL),
+(62, 1, 'ross123', 'Success - User Login', '2025-05-16 13:19:45', NULL, 'Active', NULL),
+(63, 1, 'ross123', 'Success - User Login', '2025-05-16 13:27:27', NULL, 'Active', NULL),
+(64, 1, 'ross123', 'Success - User Login', '2025-05-16 13:29:54', NULL, 'Active', NULL),
+(65, 1, 'ross123', 'Success - User Login', '2025-05-16 13:31:16', NULL, 'Active', NULL),
+(66, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 14:32:33', '2025-05-16 14:36:36', 'Inactive', NULL),
+(67, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 14:36:27', '2025-05-16 14:36:36', 'Inactive', NULL),
+(68, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 14:39:09', '2025-05-16 14:42:01', 'Inactive', NULL),
+(69, 1, 'ross123', 'Success - User Login', '2025-05-16 15:04:21', NULL, 'Active', NULL),
+(70, 1, 'ross123', 'Success - User Login', '2025-05-16 15:04:51', NULL, 'Active', NULL),
+(71, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 15:07:47', '2025-05-16 15:09:14', 'Inactive', NULL),
+(72, 3, 'jeja123', 'Success - Admin Login', '2025-05-16 15:09:02', '2025-05-16 15:09:14', 'Inactive', NULL),
+(73, 1, 'ross123', 'Success - User Login', '2025-05-16 15:18:09', NULL, 'Active', NULL),
+(74, 1, 'ross123', 'User', '2025-05-16 15:18:30', NULL, 'Active', 'User Booked an appointment');
 
 -- --------------------------------------------------------
 
@@ -149,15 +192,36 @@ INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_email`, `u_username`, `u_password
 (2, 'ian', 'iansarno@gmail.com', 'ian123', 'ky88G1YlfOhTmsJp16q0JVDaz4gY0HXwvfGZBWKq4+8=', 'Admin', 'Active', 'What\'s the name of your first pet?', 'kPP3e1CTgrOFy2MeVuAyRj3YCF0KkXkpoqnlJBGV5Nw=', 'sarno', 'Null'),
 (3, 'ross', 'jeja@gmail.com', 'jeja123', 'ky88G1YlfOhTmsJp16q0JVDaz4gY0HXwvfGZBWKq4+8=', 'Admin', 'Active', 'What\'s your favorite food?', '3kM+1VChYkp0J5qjDDa1LyhEJmEMAUtwAi5MiJ68qHU=', 'sabio', 'src/images/add.png');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `veterinarian`
+--
+
+CREATE TABLE `veterinarian` (
+  `vet_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `specialization` varchar(100) NOT NULL,
+  `contact_number` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `tbl_loads`
+-- Indexes for table `appointment`
 --
-ALTER TABLE `tbl_loads`
-  ADD PRIMARY KEY (`Load_id`);
+ALTER TABLE `appointment`
+  ADD PRIMARY KEY (`appointment_id`);
+
+--
+-- Indexes for table `medicalrecord`
+--
+ALTER TABLE `medicalrecord`
+  ADD PRIMARY KEY (`record_id`),
+  ADD KEY `appointment_id` (`appointment_id`);
 
 --
 -- Indexes for table `tbl_log`
@@ -173,20 +237,32 @@ ALTER TABLE `tbl_users`
   ADD PRIMARY KEY (`u_id`);
 
 --
+-- Indexes for table `veterinarian`
+--
+ALTER TABLE `veterinarian`
+  ADD PRIMARY KEY (`vet_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `tbl_loads`
+-- AUTO_INCREMENT for table `appointment`
 --
-ALTER TABLE `tbl_loads`
-  MODIFY `Load_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+ALTER TABLE `appointment`
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `medicalrecord`
+--
+ALTER TABLE `medicalrecord`
+  MODIFY `record_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_log`
 --
 ALTER TABLE `tbl_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
@@ -195,8 +271,20 @@ ALTER TABLE `tbl_users`
   MODIFY `u_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `veterinarian`
+--
+ALTER TABLE `veterinarian`
+  MODIFY `vet_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `medicalrecord`
+--
+ALTER TABLE `medicalrecord`
+  ADD CONSTRAINT `medicalrecord_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`appointment_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tbl_log`
