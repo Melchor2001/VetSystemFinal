@@ -1,0 +1,518 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package admin;
+
+import config.Session;
+import java.awt.Color;
+import javax.swing.JOptionPane;
+import LoginPage.loginForm;
+import config.dbConnector;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author mypc
+ */
+public class adminDashboard extends javax.swing.JFrame {
+
+    /**
+     * Creates new form adminDashboard
+     */
+    public adminDashboard() {
+        initComponents();
+          loadUserProfile();
+    }
+    Color redd = new Color(0,0,153);
+    Color shok = new Color(255,255,255);
+    
+ private void loadLogs() {
+    dbConnector connector = new dbConnector();
+    try (Connection con = connector.getConnection()) {
+
+        // Update 'Pending' log_status to 'Active' for recent logins
+        String updateQuery = "UPDATE tbl_log SET log_status = 'Active' WHERE log_status = 'Pending'";
+        try (PreparedStatement updateStmt = con.prepareStatement(updateQuery)) {
+            updateStmt.executeUpdate();
+        }
+
+        // Fetch updated logs including logout time and log_description
+        String selectQuery = "SELECT l.log_id, l.u_username, l.login_time, l.logout_time, l.u_type, " +
+                             "CASE WHEN u.u_username IS NULL THEN 'Invalid User' ELSE l.log_status END AS log_status, " +
+                             "l.log_description " + // Include log_description
+                             "FROM tbl_log l LEFT JOIN tbl_users u ON l.u_username = u.u_username " +
+                             "ORDER BY l.login_time DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(selectQuery)) {
+
+            DefaultTableModel model = new DefaultTableModel(
+                new String[]{"Log ID", "Username", "Login Time", "Logout Time", "User Type", "Status", "Description"}, 0 // Add "Description" column
+            );
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("log_id"),
+                    rs.getString("u_username"),
+                    rs.getTimestamp("login_time"),
+                    rs.getTimestamp("logout_time"),
+                    rs.getString("u_type"),
+                    rs.getString("log_status"),
+                    rs.getString("log_description") // Add log_description value
+                });
+            }
+
+            logstbl.setModel(model);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Error loading logs: " + ex.getMessage());
+    }
+}
+
+ 
+ private void logoutUser(String username) {
+    dbConnector connector = new dbConnector();
+    try (Connection con = connector.getConnection()) {
+        
+        
+        // Update log_status to "Inactive" and set logout_time
+        String updateQuery = "UPDATE tbl_log SET log_status = 'Inactive', logout_time = NOW() " +
+                             "WHERE u_username = ? AND log_status = 'Active'";
+        
+        try (PreparedStatement stmt = con.prepareStatement(updateQuery)) {
+            stmt.setString(1, username);
+            int updatedRows = stmt.executeUpdate();
+
+            if (updatedRows > 0) {
+                JOptionPane.showMessageDialog(null, "User " + username + " has logged out successfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "No active session found for " + username);
+            }
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Error logging out: " + ex.getMessage());
+    }
+}
+ 
+ 
+private void loadUserProfile() {
+    dbConnector dbc = new dbConnector();
+    Session sess = Session.getInstance();
+
+    String query = "SELECT u_image FROM tbl_users WHERE u_id = ?";
+
+    try (Connection conn = dbc.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        pstmt.setInt(1, sess.getUid());
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            String imagePath = rs.getString("u_image");
+
+            if (imagePath != null && !imagePath.isEmpty()) {
+                ImageIcon icon = new ImageIcon(imagePath);
+                u_image.setIcon(icon);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Log the error
+        JOptionPane.showMessageDialog(this, "Error loading profile image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}   
+
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jColorChooser1 = new javax.swing.JColorChooser();
+        jColorChooser2 = new javax.swing.JColorChooser();
+        jColorChooser3 = new javax.swing.JColorChooser();
+        jFrame1 = new javax.swing.JFrame();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        acc_fname = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        acc_lname = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        u_image = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        LOGpannel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        logstbl = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(221, 54, 54));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 153)));
+
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel4.setText("ADMIN'S DASHBOARD");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(461, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(357, 357, 357))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 970, 30));
+
+        jPanel3.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 270));
+
+        acc_fname.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        acc_fname.setForeground(new java.awt.Color(255, 255, 255));
+        acc_fname.setText("ADMIN");
+        jPanel3.add(acc_fname, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 200, 30));
+
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("USERS");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 70, 40));
+
+        jPanel3.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 200, 70));
+
+        acc_lname.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        acc_lname.setForeground(new java.awt.Color(255, 255, 255));
+        acc_lname.setText("Admin");
+        jPanel3.add(acc_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 190, 200, -1));
+
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        u_image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel5.add(u_image, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 130));
+
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 200, 130));
+
+        jPanel7.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel7MouseClicked(evt);
+            }
+        });
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel9.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel9.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("ACCOUNT");
+        jPanel7.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 170, 60));
+
+        jPanel3.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 200, -1));
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel8MouseClicked(evt);
+            }
+        });
+        jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Medical Record");
+        jPanel8.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 200, 20));
+
+        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 460, 200, 60));
+
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("APPOINTMENT");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 290, 200, 60));
+
+        LOGpannel.setBackground(new java.awt.Color(255, 255, 255));
+        LOGpannel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LOGpannelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                LOGpannelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                LOGpannelMouseExited(evt);
+            }
+        });
+        LOGpannel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setText("LOG OUT");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+        LOGpannel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 10));
+
+        jPanel3.add(LOGpannel, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 540, 68, 30));
+
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 200, 580));
+
+        jPanel12.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel12.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        logstbl.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 153)));
+        logstbl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "log_id", "u_username", "login_time", "u_type", "log_status", "log_description"
+            }
+        ));
+        jScrollPane1.setViewportView(logstbl);
+
+        jPanel12.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 750, 450));
+
+        jLabel6.setFont(new java.awt.Font("Javanese Text", 3, 36)); // NOI18N
+        jLabel6.setText("Sometimes, your pet picks you.");
+        jPanel12.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
+
+        getContentPane().add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 30, 770, 580));
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        usersForm usf = new usersForm();
+        usf.setVisible(true);
+        this.dispose();
+        
+        
+    }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        usersForm usf = new usersForm();
+        usf.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+         Session sess = Session.getInstance();
+    if (sess.getUid() == 0) {
+        JOptionPane.showMessageDialog(null, "No account, Login First!"); 
+        loginForm lf = new loginForm();
+        lf.setVisible(true);
+        this.dispose();
+    }
+    acc_fname.setText("" + sess.getFname());
+    acc_lname.setText("" + sess.getLname());
+
+    // Load logs when the form is activated
+    loadLogs();
+    
+    }//GEN-LAST:event_formWindowActivated
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        Session sess = Session.getInstance();
+    if (sess.getUid() != 0) {
+        logoutUser(sess.getUsername());  // Log out the current user
+    }
+
+    loginForm loginFrame = new loginForm();
+    JOptionPane.showMessageDialog(null, "Log-out Success!");
+    loginFrame.setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void LOGpannelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LOGpannelMouseEntered
+        LOGpannel.setBackground(redd);
+    }//GEN-LAST:event_LOGpannelMouseEntered
+
+    private void LOGpannelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LOGpannelMouseExited
+        LOGpannel.setBackground(shok);
+    }//GEN-LAST:event_LOGpannelMouseExited
+
+    private void LOGpannelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LOGpannelMouseClicked
+         Session sess = Session.getInstance();
+    if (sess.getUid() != 0) {
+        logoutUser(sess.getUsername());  // Log out the current user
+    }
+
+    loginForm loginFrame = new loginForm();
+    JOptionPane.showMessageDialog(null, "Log-out Success!");
+    loginFrame.setVisible(true);
+    this.dispose();
+
+    }//GEN-LAST:event_LOGpannelMouseClicked
+
+    private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
+        AdminDetails ads = new AdminDetails();
+        ads.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jPanel7MouseClicked
+
+    private void jPanel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel8MouseClicked
+        MedicalRecord MR = new MedicalRecord();
+        MR.setVisible(true);
+        this.dispose();         // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel8MouseClicked
+
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+         ViewAllAppointments ads = new ViewAllAppointments();
+        ads.setVisible(true);
+        this.dispose();           // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel6MouseClicked
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(adminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(adminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(adminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(adminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new adminDashboard().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel LOGpannel;
+    private javax.swing.JLabel acc_fname;
+    private javax.swing.JLabel acc_lname;
+    private javax.swing.JColorChooser jColorChooser1;
+    private javax.swing.JColorChooser jColorChooser2;
+    private javax.swing.JColorChooser jColorChooser3;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable logstbl;
+    private javax.swing.JLabel u_image;
+    // End of variables declaration//GEN-END:variables
+}
