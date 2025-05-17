@@ -21,13 +21,14 @@ import javax.swing.ImageIcon;
  * @author mypc
  */
 public class userDashboard extends javax.swing.JFrame {
-
+ 
+        
     /**
      * Creates new form userDashboard
      */
     public userDashboard() {
         initComponents();
-         loadUserProfile();
+        
     }
     Color shok = new Color(255,255,255);
     Color redd = new Color(0,0,153);
@@ -106,6 +107,8 @@ private void loadUserProfile() {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -238,6 +241,20 @@ private void loadUserProfile() {
 
         jPanel12.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 170, 150));
 
+        jPanel8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel8MouseClicked(evt);
+            }
+        });
+        jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Medical Record");
+        jPanel8.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 170, -1));
+
+        jPanel12.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 160, 170, 150));
+
         getContentPane().add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 510, 470));
 
         pack();
@@ -312,6 +329,13 @@ private void loadUserProfile() {
     this.dispose();   // TODO add your handling code here:
     }//GEN-LAST:event_jPanel1MouseClicked
 
+    private void jPanel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel8MouseClicked
+     int currentUserId = 1;  // Replace with the logged-in user ID from your login session
+    ViewMedicalRecordPet vmr = new ViewMedicalRecordPet(currentUserId);
+    vmr.setLocationRelativeTo(null);
+    vmr.setVisible(true); 
+    }//GEN-LAST:event_jPanel8MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -355,6 +379,7 @@ private void loadUserProfile() {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
@@ -364,6 +389,7 @@ private void loadUserProfile() {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel u_image;
     // End of variables declaration//GEN-END:variables
 }
