@@ -109,6 +109,7 @@ private void loadUserProfile() {
         jLabel3 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -253,6 +254,9 @@ private void loadUserProfile() {
         jLabel7.setText("Medical Record");
         jPanel8.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 170, -1));
 
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-pet-100.png"))); // NOI18N
+        jPanel8.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 120, 80));
+
         jPanel12.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 160, 170, 150));
 
         getContentPane().add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 510, 470));
@@ -380,6 +384,7 @@ private void loadUserProfile() {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;

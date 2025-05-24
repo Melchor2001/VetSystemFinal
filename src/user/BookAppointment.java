@@ -146,62 +146,61 @@ public class BookAppointment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
- String petName = Petname.getText().trim();
-    String breed = Petbreed.getText().trim();
-    String ageStr = Petage.getText().trim();
-    String reason = AR.getText().trim();
+String petName = Petname.getText().trim();
+String breed = Petbreed.getText().trim();
+String ageStr = Petage.getText().trim();
+String reason = AR.getText().trim();
 
-    if (petName.isEmpty() || breed.isEmpty() || ageStr.isEmpty() || reason.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill all appointment fields.");
-        return;
-    }
+if (petName.isEmpty() || breed.isEmpty() || ageStr.isEmpty() || reason.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Please fill all appointment fields.");
+    return;
+}
 
-    try {
-        int age = Integer.parseInt(ageStr);
-        dbConnector dbc = new dbConnector();
-        Session sess = Session.getInstance(); // ✅ Session reference
-        int userId = 0;
-        String uname2 = null;
+try {
+    int age = Integer.parseInt(ageStr);
+    dbConnector dbc = new dbConnector();
+    Session sess = Session.getInstance();
+    int userId = 0;
+    String uname2 = null;
 
-        try (Connection conn = dbc.getConnection()) {
-            // Get user details using sess.getUid()
-            String query = "SELECT * FROM tbl_users WHERE u_id = ?";
-            try (PreparedStatement userStmt = conn.prepareStatement(query)) {
-                userStmt.setInt(1, sess.getUid());
-                ResultSet resultSet = userStmt.executeQuery();
+    try (Connection conn = dbc.getConnection()) {
+        String query = "SELECT * FROM tbl_users WHERE u_id = ?";
+        try (PreparedStatement userStmt = conn.prepareStatement(query)) {
+            userStmt.setInt(1, sess.getUid());
+            ResultSet resultSet = userStmt.executeQuery();
 
-                if (resultSet.next()) {
-                    userId = resultSet.getInt("u_id");
-                    uname2 = resultSet.getString("u_username");
-                }
-            }
-
-            // Insert appointment
-            String insertSql = "INSERT INTO Appointment (pet_name, pet_breed, pet_age, appointment_reason, status) "
-                             + "VALUES (?, ?, ?, ?, 'Scheduled')";
-            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                insertStmt.setString(1, petName);
-                insertStmt.setString(2, breed);
-                insertStmt.setInt(3, age);
-                insertStmt.setString(4, reason);
-
-                int rows = insertStmt.executeUpdate();
-                if (rows > 0) {
-                    logEvent(userId, uname2, sess.getType(), "User Booked an appointment"); // ✅ log
-                    JOptionPane.showMessageDialog(this, "Appointment booked successfully!");
-                    clearAppointmentFields();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to book appointment.");
-                }
+            if (resultSet.next()) {
+                userId = resultSet.getInt("u_id");
+                uname2 = resultSet.getString("u_username");
             }
         }
 
-    } catch (NumberFormatException nfe) {
-        JOptionPane.showMessageDialog(this, "Age must be a valid number.");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Unexpected error: " + e.getMessage());
-        e.printStackTrace();
+        String insertSql = "INSERT INTO appointment (pet_name, pet_breed, pet_age, appointment_reason, status, u_id) "
+                         + "VALUES (?, ?, ?, ?, 'Scheduled', ?)";
+        try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+            insertStmt.setString(1, petName);
+            insertStmt.setString(2, breed);
+            insertStmt.setInt(3, age);
+            insertStmt.setString(4, reason);
+            insertStmt.setInt(5, userId); // ✅ Set user ID
+
+            int rows = insertStmt.executeUpdate();
+            if (rows > 0) {
+                logEvent(userId, uname2, sess.getType(), "User booked an appointment");
+                JOptionPane.showMessageDialog(this, "Appointment booked successfully!");
+                clearAppointmentFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to book appointment.");
+            }
+        }
     }
+
+} catch (NumberFormatException nfe) {
+    JOptionPane.showMessageDialog(this, "Age must be a valid number.");
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Unexpected error: " + e.getMessage());
+    e.printStackTrace();
+}
 
        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1MouseClicked

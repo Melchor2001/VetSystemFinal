@@ -27,68 +27,56 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
    public ViewMedicalRecordPet(int currentUserId) {
     this.currentUserId = currentUserId;
     initComponents();
-    viewMedicalRecordForUser(currentUserId);
+   displayMedicalRecords();
 }
-  
-    
-  public void viewMedicalRecordForUser(int ownerId) {
-   String[] columnNames = {
+  public void displayMedicalRecords() {
+    String[] columnNames = {
         "record_id", "appointment_id", "pet_name", "pet_breed",
         "pet_age", "diagnosis", "treatment", "prescription", "notes"
     };
 
+    // Set up the model with column names and non-editable cells
     DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
-            return false;
+            return false; // Make all cells non-editable
         }
     };
 
+    // Attach the model to your JTable
     tblUserRecords.setModel(model);
+    model.setRowCount(0); // Clear previous rows if this is used for refresh
 
-    // ✅ Correct SQL: no ambiguity, all fields properly selected
-    String sql = "SELECT medicalrecord.record_id, " +
-                 "medicalrecord.appointment_id, " +
-                 "medicalrecord.pet_name, " +
-                 "medicalrecord.pet_breed, " +
-                 "medicalrecord.pet_age, " +
-                 "medicalrecord.diagnosis, " +
-                 "medicalrecord.treatment, " +
-                 "medicalrecord.prescription, " +
-                 "medicalrecord.notes " +
-                 "FROM medicalrecord " +
-                 "INNER JOIN appointment ON medicalrecord.appointment_id = appointment.appointment_id " +
-                 "WHERE appointment.appointment_id = ?"; // ✅ THIS is the WHERE clause
+    // SQL to fetch data from medicalrecord
+    String sql = "SELECT record_id, appointment_id, pet_name, pet_breed, pet_age, " +
+                 "diagnosis, treatment, prescription, notes FROM medicalrecord";
 
     try (Connection con = new dbConnector().getConnection();
-         PreparedStatement pst = con.prepareStatement(sql)) {
+         PreparedStatement pst = con.prepareStatement(sql);
+         ResultSet rs = pst.executeQuery()) {
 
-        pst.setInt(1, ownerId);
-
-        ResultSet rs = pst.executeQuery();
+        // Iterate through result set and populate the table
         while (rs.next()) {
-            Object[] row = {
+            model.addRow(new Object[] {
                 rs.getInt("record_id"),
                 rs.getInt("appointment_id"),
                 rs.getString("pet_name"),
                 rs.getString("pet_breed"),
-                rs.getString("pet_age"),
+                rs.getInt("pet_age"), // corrected to int
                 rs.getString("diagnosis"),
                 rs.getString("treatment"),
                 rs.getString("prescription"),
                 rs.getString("notes")
-            };
-            model.addRow(row);
+            });
         }
-
-        rs.close();
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Error loading medical records: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
     }
 }
 
-
+    
+ 
 
 
     /**
@@ -104,6 +92,7 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUserRecords = new javax.swing.JTable();
         cc = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -113,18 +102,18 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
 
         tblUserRecords.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Record ID", "Appointment ID", "Pet Name", "Pet Breed", "Pet Age", "Diagnosis", "Preciption", "Notes", "Treatment"
+                "Record ID", "U_id", "Appointment ID", "Pet Name", "Pet Breed", "Pet Age", "Diagnosis", "Preciption", "Notes", "Treatment"
             }
         ));
         jScrollPane1.setViewportView(tblUserRecords);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 51, 730, 410));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 860, 410));
 
         cc.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cc.setText("Back");
@@ -135,7 +124,16 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
         });
         jPanel1.add(cc, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 10, 80, 30));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 490));
+        jButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jButton3.setText("REFRESH");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 150, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 490));
 
         pack();
         setLocationRelativeTo(null);
@@ -146,6 +144,10 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
         usf.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ccActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+       displayMedicalRecords();       // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -184,6 +186,7 @@ public class ViewMedicalRecordPet extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cc;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblUserRecords;

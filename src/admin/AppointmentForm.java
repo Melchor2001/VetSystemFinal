@@ -175,7 +175,7 @@ public class AppointmentForm extends javax.swing.JFrame {
         });
         jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 90, 30));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 30, 90, 240));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 30, 90, 240));
         jPanel1.add(reason, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, 160, 30));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
@@ -188,27 +188,28 @@ public class AppointmentForm extends javax.swing.JFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 600, 380));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
- String appointmentId = AI.getText().trim();  // Appointment ID
+String appointmentId = AI.getText().trim();
 String petNameStr = petName.getText().trim();
 String breedStr = breed.getText().trim();
 String ageStr = age.getText().trim();
-String reasonStr = reason.getText().trim();  // Assuming you have a JTextField or JTextArea for reason
+String reasonStr = reason.getText().trim();
+String statusStr = (sched.getSelectedItem() != null) ? sched.getSelectedItem().toString().trim() : "";
 
-// Basic empty field validation
+// Validations
 if (appointmentId.isEmpty()) {
     JOptionPane.showMessageDialog(this, "Error: Appointment ID is missing.", "Error", JOptionPane.ERROR_MESSAGE);
     return;
 }
 
-if (petNameStr.isEmpty() || breedStr.isEmpty() || ageStr.isEmpty() || reasonStr.isEmpty()) {
-    JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+if (petNameStr.isEmpty() || breedStr.isEmpty() || ageStr.isEmpty() || reasonStr.isEmpty() || statusStr.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Please fill in all fields including status.", "Error", JOptionPane.ERROR_MESSAGE);
     return;
 }
 
-// Custom validations
 if (!petNameStr.matches("[a-zA-Z\\s]+")) {
     JOptionPane.showMessageDialog(this, "Pet name should only contain letters and spaces.", "Input Error", JOptionPane.ERROR_MESSAGE);
     return;
@@ -233,38 +234,39 @@ try {
 
     dbConnector dbc = new dbConnector();
 
-    // Check if the appointment ID exists
-    String checkQuery = "SELECT COUNT(*) FROM appointment WHERE appointment_id = ?";
-    try (Connection conn = dbc.getConnection();
-         PreparedStatement pst = conn.prepareStatement(checkQuery)) {
+    // Use ONE connection for both operations
+    try (Connection conn = dbc.getConnection()) {
 
-        pst.setString(1, appointmentId);
-        ResultSet rs = pst.executeQuery();
+        // Check if the appointment ID exists
+        String checkQuery = "SELECT COUNT(*) FROM appointment WHERE appointment_id = ?";
+        try (PreparedStatement pst = conn.prepareStatement(checkQuery)) {
+            pst.setString(1, appointmentId);
+            ResultSet rs = pst.executeQuery();
 
-        if (rs.next() && rs.getInt(1) == 0) {
-            JOptionPane.showMessageDialog(this, "Appointment ID not found!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            if (rs.next() && rs.getInt(1) == 0) {
+                JOptionPane.showMessageDialog(this, "Appointment ID not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
-    }
 
-    // Update the appointment details
-    String updateQuery = "UPDATE appointment SET pet_name = ?, pet_breed = ?, pet_age = ?, appointment_reason = ? WHERE appointment_id = ?";
-    try (Connection conn = dbc.getConnection();
-         PreparedStatement updatePst = conn.prepareStatement(updateQuery)) {
+        // Perform the update
+        String updateQuery = "UPDATE appointment SET pet_name = ?, pet_breed = ?, pet_age = ?, appointment_reason = ?, status = ? WHERE appointment_id = ?";
+        try (PreparedStatement updatePst = conn.prepareStatement(updateQuery)) {
+            updatePst.setString(1, petNameStr);
+            updatePst.setString(2, breedStr);
+            updatePst.setInt(3, ageInt);
+            updatePst.setString(4, reasonStr);
+            updatePst.setString(5, statusStr);
+            updatePst.setString(6, appointmentId);
 
-        updatePst.setString(1, petNameStr);
-        updatePst.setString(2, breedStr);
-        updatePst.setInt(3, ageInt);
-        updatePst.setString(4, reasonStr);
-        updatePst.setString(5, appointmentId);
-
-        int updated = updatePst.executeUpdate();
-        if (updated > 0) {
-            JOptionPane.showMessageDialog(this, "Appointment updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            new ViewAllAppointments().setVisible(true); // Redirect to appointment list form
-            this.dispose();  // Close this form
-        } else {
-            JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
+            int updated = updatePst.executeUpdate();
+            if (updated > 0) {
+                JOptionPane.showMessageDialog(this, "Appointment updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                new ViewAllAppointments().setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -272,11 +274,13 @@ try {
     JOptionPane.showMessageDialog(this, "Age must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
 } catch (SQLException | HeadlessException ex) {
     JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-}   // TODO add your handling code here:
+}
+
+   // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-         adminDashboard ads = new adminDashboard();
+         ViewAllAppointments ads = new ViewAllAppointments();
         ads.setVisible(true);
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed

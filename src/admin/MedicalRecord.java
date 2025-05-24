@@ -22,11 +22,15 @@ import javax.swing.JOptionPane;
  */
 public class MedicalRecord extends javax.swing.JFrame {
 
+    
+    
+    private String appointmentId;
     /**
      * Creates new form MedicalRecord
      */
-    public MedicalRecord() {
+    public MedicalRecord(String appointmentId) {
         initComponents();
+         this.appointmentId = appointmentId;
     }
     
    private void clearMedicalRecordForm() {
@@ -69,6 +73,8 @@ public class MedicalRecord extends javax.swing.JFrame {
         }
     }
 }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,8 +107,20 @@ public class MedicalRecord extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         notesArea = new javax.swing.JTextArea();
         DIa2 = new javax.swing.JLabel();
+        ap4 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        reason = new javax.swing.JTextPane();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        area = new javax.swing.JTextArea();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
@@ -128,7 +146,7 @@ public class MedicalRecord extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 400, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 430, -1, 30));
 
         cc.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cc.setText("CANCEL");
@@ -137,7 +155,7 @@ public class MedicalRecord extends javax.swing.JFrame {
                 ccActionPerformed(evt);
             }
         });
-        jPanel1.add(cc, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, -1, 30));
+        jPanel1.add(cc, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 430, -1, 30));
         jPanel1.add(Pb, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 170, 30));
 
         ap1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -151,121 +169,177 @@ public class MedicalRecord extends javax.swing.JFrame {
 
         aa1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         aa1.setText("Prescription");
-        jPanel1.add(aa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 40, -1, 20));
+        jPanel1.add(aa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, -1, 20));
 
         DIa1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         DIa1.setText("Diagnosis");
-        jPanel1.add(DIa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 180, -1, -1));
+        jPanel1.add(DIa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 180, -1, -1));
         jPanel1.add(ad, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 170, 30));
 
         prescriptionArea.setColumns(20);
         prescriptionArea.setRows(5);
         jScrollPane1.setViewportView(prescriptionArea);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 60, -1, 100));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 60, 160, 100));
 
         treatmentArea.setColumns(20);
         treatmentArea.setRows(5);
         jScrollPane2.setViewportView(treatmentArea);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 200, -1, 100));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 200, 150, 100));
 
         diagnosisArea.setColumns(20);
         diagnosisArea.setRows(5);
         jScrollPane3.setViewportView(diagnosisArea);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 200, -1, 100));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, 150, 100));
 
         ap3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        ap3.setText("Pet Age");
-        jPanel1.add(ap3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 222, -1, 30));
+        ap3.setText("Appointment Reason");
+        jPanel1.add(ap3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, -1, 30));
 
         notesArea.setColumns(20);
         notesArea.setRows(5);
         jScrollPane4.setViewportView(notesArea);
 
-        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, -1));
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 150, -1));
 
         DIa2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         DIa2.setText("Appointment ID");
         jPanel1.add(DIa2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 490));
+        ap4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ap4.setText("Pet Age");
+        jPanel1.add(ap4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 222, -1, 30));
+
+        jScrollPane5.setViewportView(reason);
+
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 160, 100));
+
+        area.setColumns(20);
+        area.setFont(new java.awt.Font("Monospaced", 1, 13)); // NOI18N
+        area.setRows(5);
+        jScrollPane6.setViewportView(area);
+
+        jPanel1.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 100, 240, 230));
+
+        jButton4.setBackground(new java.awt.Color(255, 255, 255));
+        jButton4.setText("Reset");
+        jButton4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 340, 80, 40));
+
+        jButton5.setBackground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Print Receipt");
+        jButton5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 340, 110, 40));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 970, 490));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-  String appointmentId = ad.getText().trim();
-    String diagnosis = diagnosisArea.getText().trim();
-    String treatment = treatmentArea.getText().trim();
-    String prescription = prescriptionArea.getText().trim();
-    String notes = notesArea.getText().trim();
-    
-    // Pet info fields
-    String petName = Pn.getText().trim();
-    String petBreed = Pb.getText().trim();
-    String petAge = Pa.getText().trim();
+ String appointmentId = ad.getText().trim();
+String diagnosis = diagnosisArea.getText().trim();
+String treatment = treatmentArea.getText().trim();
+String prescription = prescriptionArea.getText().trim();
+String notes = notesArea.getText().trim();
 
-    // Validate required fields
-    if (appointmentId.isEmpty() || diagnosis.isEmpty() || petName.isEmpty() || petBreed.isEmpty() || petAge.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill all required fields.");
-        return;
-    }
+// Pet info fields
+String petName = Pn.getText().trim();
+String petBreed = Pb.getText().trim();
+String petAge = Pa.getText().trim();
 
-    try {
-        int appointmentIdInt = Integer.parseInt(appointmentId);
-        int ageInt = Integer.parseInt(petAge); // Validate pet age is numeric
+// Validate required fields
+if (appointmentId.isEmpty() || diagnosis.isEmpty() || petName.isEmpty() || petBreed.isEmpty() || petAge.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Please fill all required fields.");
+    return;
+}
 
-        dbConnector dbc = new dbConnector();
-        Session sess = Session.getInstance();
-        int userId = 0;
-        String uname2 = null;
+try {
+    int appointmentIdInt = Integer.parseInt(appointmentId);
+    int ageInt = Integer.parseInt(petAge); // Validate pet age is numeric
 
-        try (Connection conn = dbc.getConnection()) {
-            // Fetch user info for logging
-            String query = "SELECT * FROM tbl_users WHERE u_id = ?";
-            try (PreparedStatement userStmt = conn.prepareStatement(query)) {
-                userStmt.setInt(1, sess.getUid());
-                ResultSet rs = userStmt.executeQuery();
+    dbConnector dbc = new dbConnector();
+    Session sess = Session.getInstance();
+    int userId = 0;
+    String uname2 = null;
 
-                if (rs.next()) {
-                    userId = rs.getInt("u_id");
-                    uname2 = rs.getString("u_username");
-                }
-            }
-
-            // Insert medical record
-            String sql = "INSERT INTO medicalrecord (appointment_id, diagnosis, treatment, prescription, notes, pet_name, pet_breed, pet_age) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-            try (PreparedStatement pst = conn.prepareStatement(sql)) {
-                pst.setInt(1, appointmentIdInt);
-                pst.setString(2, diagnosis);
-                pst.setString(3, treatment);
-                pst.setString(4, prescription);
-                pst.setString(5, notes);
-                pst.setString(6, petName);
-                pst.setString(7, petBreed);
-                pst.setInt(8, ageInt);
-
-                int rows = pst.executeUpdate();
-                if (rows > 0) {
-                    logEvent(userId, uname2, sess.getType(), "Admin Added medical record for appointment ID " + appointmentIdInt);
-                    JOptionPane.showMessageDialog(this, "Medical record saved successfully!");
-                    // Optionally clear fields or close the form
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to save medical record.");
-                }
+    try (Connection conn = dbc.getConnection()) {
+        // Fetch user info for logging
+        String query = "SELECT * FROM tbl_users WHERE u_id = ?";
+        try (PreparedStatement userStmt = conn.prepareStatement(query)) {
+            userStmt.setInt(1, sess.getUid());
+            ResultSet rs = userStmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("u_id");
+                uname2 = rs.getString("u_username");
             }
         }
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Appointment ID and Pet Age must be numeric.");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        e.printStackTrace();
+        // Insert medical record
+        String sql = "INSERT INTO medicalrecord (appointment_id, diagnosis, treatment, prescription, notes, pet_name, pet_breed, pet_age) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, appointmentIdInt);
+            pst.setString(2, diagnosis);
+            pst.setString(3, treatment);
+            pst.setString(4, prescription);
+            pst.setString(5, notes);
+            pst.setString(6, petName);
+            pst.setString(7, petBreed);
+            pst.setInt(8, ageInt);
+
+            int rows = pst.executeUpdate();
+            if (rows > 0) {
+                // Log activity
+                logEvent(userId, uname2, sess.getType(), "Admin Added medical record for appointment ID " + appointmentIdInt);
+
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Medical record saved successfully!");
+                
+                
+
+                // Show formatted medical record in area
+                area.setText(""); // clear before appending
+                area.append("*********************************************\n");
+                area.append("*              Medical Record               *\n");
+                area.append("*********************************************\n\n");
+                area.append("Date: " + new Date().toString() + "\n\n");
+                area.append("Pet Name: " + petName + "\n");
+                area.append("Breed: " + petBreed + "\n");
+                area.append("Age: " + ageInt + " years\n");
+                area.append("---------------------------------------------\n");
+                area.append("Diagnosis: " + diagnosis + "\n");
+                area.append("Treatment: " + treatment + "\n");
+                area.append("Prescription: " + prescription + "\n");
+                area.append("Notes: " + notes + "\n");
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to save medical record.");
+            }
+        }
     }
+
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Appointment ID and Pet Age must be numeric.");
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    e.printStackTrace();
+}
+
     // TODO add your handling code here:
     }//GEN-LAST:event_jButton1MouseClicked
 
@@ -276,8 +350,51 @@ public class MedicalRecord extends javax.swing.JFrame {
     }//GEN-LAST:event_ccActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         // TODO add your handling code here:
+              // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+     try {
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT appointment_id, pet_name, pet_breed, pet_age, appointment_reason FROM appointment WHERE appointment_id = ?";
+        
+        try (Connection conn = dbc.getConnection(); 
+             PreparedStatement pst = conn.prepareStatement(query)) {
+
+            pst.setString(1, appointmentId);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                // Assuming you have JTextFields named:
+                // appointmentIdField, petNameField, breedField, ageField, reasonField
+
+                ad.setText(rs.getString("appointment_id"));
+                Pn.setText(rs.getString("pet_name"));
+                Pb.setText(rs.getString("pet_breed"));
+                Pa.setText(rs.getString("pet_age"));
+                reason.setText(rs.getString("appointment_reason"));
+            } else {
+                JOptionPane.showMessageDialog(this, "Appointment not found.");
+            }
+
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error loading appointment: " + e.getMessage());
+    }         // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowActivated
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // area.setText("");
+        //username.setText("");
+        //loanamount.setText("");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try{
+            area.print();
+        }catch(Exception e){
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -309,10 +426,12 @@ public class MedicalRecord extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
+         String appointmentId = "A001"; // or from your table selection
+final String finalAppointmentId = appointmentId;
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MedicalRecord().setVisible(true);
+               new MedicalRecord(appointmentId).setVisible(true);
             }
         });
     }
@@ -329,17 +448,24 @@ public class MedicalRecord extends javax.swing.JFrame {
     private javax.swing.JLabel ap1;
     private javax.swing.JLabel ap2;
     private javax.swing.JLabel ap3;
+    private javax.swing.JLabel ap4;
+    public javax.swing.JTextArea area;
     private javax.swing.JButton cc;
     private javax.swing.JLabel dd;
     private javax.swing.JTextArea diagnosisArea;
     private javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton4;
+    public javax.swing.JButton jButton5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextArea notesArea;
     private javax.swing.JTextArea prescriptionArea;
+    private javax.swing.JTextPane reason;
     private javax.swing.JTextArea treatmentArea;
     // End of variables declaration//GEN-END:variables
 }

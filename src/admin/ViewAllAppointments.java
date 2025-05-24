@@ -93,33 +93,36 @@ try (Connection connect = new dbConnector().getConnection();
 
 }
    
-   private void loadLoadsData() {
-    DefaultTableModel model = (DefaultTableModel) pettbl.getModel();  // Assuming load_tbl is the JTable for loads
+  private void loadLoadsData() {
+    DefaultTableModel model = (DefaultTableModel) pettbl.getModel();
     model.setRowCount(0); // Clear the table before reloading
 
-    // Include 'status' in the query
-    String sql = "SELECT appointment_id, pet_name, pet_breed, pet_age, appointment_reason, status FROM appointment";
+    String sql = "SELECT a.appointment_id, a.pet_name, a.pet_breed, a.pet_age, " +
+                 "a.appointment_reason, a.status " +
+                 "FROM appointment a " +
+                 "LEFT JOIN medicalrecord mr ON a.appointment_id = mr.appointment_id " +
+                 "WHERE mr.appointment_id IS NULL";
 
-    try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sarns", "root", "");
+    try (Connection con = new dbConnector().getConnection();
          PreparedStatement pst = con.prepareStatement(sql);
          ResultSet rs = pst.executeQuery()) {
 
-        // Iterate through ResultSet and add rows to the table
         while (rs.next()) {
-            model.addRow(new Object[] {
+            model.addRow(new Object[]{
                 rs.getInt("appointment_id"),
                 rs.getString("pet_name"),
                 rs.getString("pet_breed"),
                 rs.getString("pet_age"),
-                  rs.getString("appointment_reason"),
-                rs.getString("status")  // <-- Add status here
+                rs.getString("appointment_reason"),
+                rs.getString("status")
             });
         }
 
     } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Error loading load data: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Error loading appointments: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
 
 
 private void updateLoadDatabase(int row, int column) {
@@ -165,13 +168,13 @@ private void updateLoadDatabase(int row, int column) {
 
         pettbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "pet name", "breed", "age", "reason", "status"
+                "Appointment ID", "pet name", "breed", "age", "reason", "status"
             }
         ));
         jScrollPane1.setViewportView(pettbl);
@@ -206,7 +209,7 @@ private void updateLoadDatabase(int row, int column) {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 95, -1, 20));
 
         jButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jButton3.setText("REFRESH");
@@ -220,6 +223,7 @@ private void updateLoadDatabase(int row, int column) {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 550));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
@@ -296,22 +300,28 @@ try {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-      int selectedRow = pettbl.getSelectedRow();
+  int selectedRow = pettbl.getSelectedRow();
 
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select an appointment from the table first.");
-        return;
-    }
+if (selectedRow == -1) {
+    JOptionPane.showMessageDialog(this, "Please select an appointment from the table first.");
+    return;
+}
 
-    // Get appointment ID from the selected row (assume ID is in column 0)
-    String appointmentId = pettbl.getValueAt(selectedRow, 0).toString();
-    String petName = pettbl.getValueAt(selectedRow, 1).toString(); // Optional display
+// Assuming status is in column index 4, adjust if different
+String status = pettbl.getValueAt(selectedRow, 4).toString();
 
-    // Open the Medical Record form and pass the appointment ID
-    MedicalRecord medicalForm = new MedicalRecord();       
-    medicalForm.setVisible(true);
-    
-    this.dispose();        // TODO add your handling code here:
+if ("Rescheduled".equalsIgnoreCase(status)) {
+    JOptionPane.showMessageDialog(this, "Cannot select an appointment that has been rescheduled.");
+    return;
+}
+
+String appointmentId = pettbl.getValueAt(selectedRow, 0).toString();
+
+MedicalRecord medicalForm = new MedicalRecord(appointmentId);
+medicalForm.setVisible(true);
+this.dispose();
+
+       // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
